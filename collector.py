@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import csv
 import os
+import pandas as pd
 
 app = Flask(__name__)
 CSV_FILE = 'trades.csv'
@@ -33,6 +34,14 @@ def webhook():
 def list_csv_files():
     files = [f for f in os.listdir('.') if f.endswith('.csv')]
     return jsonify(files)
+
+@app.route('/last', methods=['GET'])
+def last_entries():
+    try:
+        df = pd.read_csv(CSV_FILE)
+        return df.tail(10).to_json(orient='records')
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
