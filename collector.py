@@ -29,5 +29,10 @@ def webhook():
         ])
     return jsonify({'status': 'ok'})
 
+@app.route('/files', methods=['GET'])
+def list_csv_files():
+    files = [f for f in os.listdir('.') if f.endswith('.csv')]
+    return jsonify(files)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
